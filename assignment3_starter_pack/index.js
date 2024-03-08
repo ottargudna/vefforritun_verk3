@@ -69,6 +69,30 @@ app.get('/api/v1/books/:id', (req, res) => {
   }
 });
 
+// Route to create a new book with genreId from URL
+app.post('/api/v1/genres/:genreId/books', (req, res) => {
+  const { title, author } = req.body;
+  const { genreId } = req.params;
+
+  const genreExists = genres.some(genre => genre.id === parseInt(genreId));
+  if (!genreExists) {
+      return res.status(404).send('Genre not found');
+  }
+  const newId = books.length > 0 ? Math.max(...books.map(book => book.id)) + 1 : 1;
+
+  const newBook = {
+      id: newId,
+      title: title,
+      author,
+      genreId: parseInt(genreId)
+  };
+
+  books.push(newBook);
+
+  res.status(201).json(newBook);
+});
+
+
 
 // TODO: Implement all logic from the assignment desription
 
