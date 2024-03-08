@@ -58,6 +58,18 @@ app.get('/api/v1/books', (req, res) => {
 });
 
 
+// Route to get a single book by id
+app.get('/api/v1/books/:id', (req, res) => {
+  const { id } = req.params;
+  const book = books.find(b => b.id === parseInt(id));
+  if (book) {
+      res.status(200).json(book);
+  } else {
+      res.status(404).send('Book not found');
+  }
+});
+
+
 // TODO: Implement all logic from the assignment desription
 
 /* YOUR CODE ENDS HERE */
