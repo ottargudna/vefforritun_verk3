@@ -52,6 +52,12 @@ const books = [
 
 /* YOUR CODE STARTS HERE */
 
+// Route to read all books
+app.get('/api/v1/books', (req, res) => {
+  res.status(200).json(books);
+});
+
+
 // TODO: Implement all logic from the assignment desription
 
 /* YOUR CODE ENDS HERE */
