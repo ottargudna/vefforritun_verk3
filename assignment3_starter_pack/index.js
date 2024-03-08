@@ -52,6 +52,8 @@ const books = [
 
 /* YOUR CODE STARTS HERE */
 
+// TODO: Implement all logic from the assignment desription
+
 // Route to read all books
 app.get('/api/v1/books', (req, res) => {
   res.status(200).json(books);
@@ -92,9 +94,57 @@ app.post('/api/v1/genres/:genreId/books', (req, res) => {
   res.status(201).json(newBook);
 });
 
+// Partially update an existing book.
+
+app.patch('/api/v1/genres/:oldGenreId/books/:bookId', (req, res) => {
+  const { oldGenreId, bookId } = req.params;
+  const { title, author, genreId: newGenreId } = req.body;
+
+  const oldGenreExists = genres.some(genre => genre.id === parseInt(oldGenreId));
+  if (!oldGenreExists) {
+      return res.status(404).send('Old genre not found');
+  }
+
+  const bookIndex = books.findIndex(book => book.id === parseInt(bookId));
+  if (bookIndex === -1) {
+      return res.status(404).send('Book not found');
+  }
+
+  if (newGenreId && !genres.some(genre => genre.id === parseInt(newGenreId))) {
+      return res.status(404).send('New genre not found');
+  }
+  
+  if (title) {
+      books[bookIndex].title = title;
+  }
+  if (author) {
+      books[bookIndex].author = author;
+  }
+  if (newGenreId) {
+      books[bookIndex].genreId = parseInt(newGenreId);
+  }
+  res.status(200).json(books[bookIndex]);
+});
 
 
-// TODO: Implement all logic from the assignment desription
+
+// Delete books
+
+app.delete('/api/v1/books/:bookId', (req, res) => {
+  const { bookId } = req.params;
+  const index = books.findIndex(book => book.id === parseInt(bookId));
+
+  if (index === -1) {
+      return res.status(404).send('Book not found');
+  }
+
+  const [deletedBook] = books.splice(index, 1);
+
+
+  res.json(deletedBook);
+});
+
+
 
 /* YOUR CODE ENDS HERE */
 
