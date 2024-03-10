@@ -159,25 +159,20 @@ app.get('/api/v1/genres', (req, res) => {
 app.post('/api/v1/genres', (req, res) => {
   const { name } = req.body;
 
-  // Check if the genre name already exists
   const existingGenre = genres.find(genre => genre.name.toLowerCase() === name.toLowerCase());
   if (existingGenre) {
       return res.status(400).send('Genre with the same name already exists');
   }
 
-  // Auto-generate new genre ID
   const newId = genres.length > 0 ? Math.max(...genres.map(genre => genre.id)) + 1 : 1;
 
-  // Create the new genre object
   const newGenre = {
       id: newId,
       name: name
   };
 
-  // Add the new genre to the array
   genres.push(newGenre);
 
-  // Return the new genre
   res.status(201).json(newGenre);
 });
 
@@ -186,21 +181,16 @@ app.delete('/api/v1/genres/:genreId', (req, res) => {
   const { genreId } = req.params;
   const genreIndex = genres.findIndex(genre => genre.id === parseInt(genreId));
 
-  // Check if the genre exists
   if (genreIndex === -1) {
       return res.status(404).send('Genre not found');
   }
-
-  // Check if any books exist in this genre
   const booksInGenre = books.some(book => book.genreId === parseInt(genreId));
   if (booksInGenre) {
       return res.status(400).send('Cannot delete genre as it has associated books');
   }
 
-  // If no books are in the genre, delete the genre
   const [deletedGenre] = genres.splice(genreIndex, 1);
 
-  // Return the deleted genre
   res.status(200).json(deletedGenre);
 });
 
